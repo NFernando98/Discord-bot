@@ -33,6 +33,24 @@ client.on('ready', () => {
          name: 'ping',
          description: 'Replies with pong.',
      })
+     commands?.create(
+         {
+         name: 'add',
+         description: 'Adds two numbers',
+         options: [{
+             name: 'num1',
+             description: 'The first number.',
+             required: true,
+             type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
+         },
+        {
+            name: 'num2',
+            description: 'The second number.',
+            required: true,
+            type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
+        }
+        ]
+     })
 })
 
 // listening for whenever /ping is ran
@@ -41,23 +59,40 @@ client.on('interactionCreate' , async (interaction) => {
         return
     }
 
+    // using options or arguments within slash commands
     const { commandName, options } = interaction
 
     if(commandName == 'ping'){
         interaction.reply({
             content: 'pong',
-            // ephemeral is basically going to be if only the user that ran the command can see the command. For now commented out
-            // ephemeral: true
+        })
+    }
+
+    // listen for /add command
+    else if (commandName === 'add'){
+        const num1 = options.getNumber('num1')!   // num1 here is from above  commands?.create 
+        const num2 = options.getNumber('num2')!   // ! at the end in typescript here means we know these are not gonna be null because mentioned as required above
+        
+        // giving bot time to think basically?
+        await interaction.deferReply({
+            ephemeral: true
+        })       
+        await new Promise(resolve => setTimeout(resolve,5000))    //5000 is 5 seconds
+
+        await interaction.editReply({
+            content: `The sum is ${num1 + num2}`,
         })
     }
 })
 
-// client.on('messageCreate', function(message){
-//     if(message.content === 'ping'){
-//         message.reply({
-//             content: 'pong',
-//         })
-//     }
-// })
 
-client.login(process.env.TOKEN)
+
+client.on('messageCreate', function(message){
+    if(message.content === 'ping'){
+        message.reply({
+            content: 'pong',
+        })
+    }
+})
+
+client.login(process.env.TOKEN);
