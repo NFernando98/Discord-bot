@@ -51,9 +51,28 @@ client.on('ready', () => {
         }
         ]
      })
+
+     commands?.create({
+        name: 'multiply',
+        description: 'multiply two numbers',
+        options: [{
+            name: 'num1',
+            description: 'The first number.',
+            required: true,
+            type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
+        },
+       {
+           name: 'num2',
+           description: 'The second number.',
+           required: true,
+           type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
+       }
+       ]
+     })
 })
 
-// listening for whenever /ping is ran
+
+// listening for whenever /ping is ran or when any command is ran
 client.on('interactionCreate' , async (interaction) => {
     if(!interaction.isCommand()){
         return
